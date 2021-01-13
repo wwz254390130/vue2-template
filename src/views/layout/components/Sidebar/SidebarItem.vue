@@ -49,33 +49,33 @@
 </template>
 
 <script>
-import path from "path";
+import path from 'path';
 
 export default {
-    name: "SidebarItem",
+    name: 'SidebarItem',
     props: {
         // route配置json
         item: {
             type: Object,
-            required: true
+            required: true,
         },
         isNest: {
             type: Boolean,
-            default: false
+            default: false,
         },
         basePath: {
             type: String,
-            default: ""
-        }
+            default: '',
+        },
     },
     data() {
         return {
-            onlyOneChild: null
+            onlyOneChild: null,
         };
     },
     methods: {
         hasOneShowingChild(children) {
-            const showingChildren = children.filter(item => {
+            const showingChildren = children.filter((item) => {
                 if (item.hidden) {
                     return false;
                 }
@@ -90,7 +90,7 @@ export default {
         },
         resolvePath(...paths) {
             return path.resolve(this.basePath, ...paths);
-        }
-    }
+        },
+    },
 };
 </script>
