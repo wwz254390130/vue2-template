@@ -10,6 +10,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-size: 14px;
 }
 
 label {
@@ -21,7 +22,7 @@ html {
   box-sizing: border-box;
 }
 
-#app{
+#app {
   height: 100%;
 }
 
@@ -30,19 +31,6 @@ html {
 *:after {
   box-sizing: inherit;
 }
-
-a,
-a:focus,
-a:hover {
-  cursor: pointer;
-  color: inherit;
-  outline: none;
-  text-decoration: none;
-}
-
-div:focus{
-  outline: none;
- }
 
 a:focus,
 a:active {
@@ -57,6 +45,10 @@ a:hover {
   text-decoration: none;
 }
 
+div:focus {
+  outline: none;
+}
+
 .clearfix {
   &:after {
     visibility: hidden;
@@ -68,11 +60,49 @@ a:hover {
   }
 }
 
-//main-container全局样式
-.app-main{
-  min-height: 100%
-}
-
+// main-container global css
 .app-container {
   padding: 20px;
 }
+
+.xz-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.xz-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.xz-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 100px;
+  max-height: 120px;
+  display: block;
+}
+
+.el-pagination { margin-top: 10px; margin-bottom: 10px; }
+.container { padding: 20px; box-shadow: 0 2px 14px 0 rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 20px; }
+.filter-item { margin-right: 10px; display: inline-block; }
+.filter-item .el-input { width: auto; }
+.filter-item input { width: 220px; }
+.button-container { padding-bottom: 10px; }
+.button-container .filter-item { margin-right: 0; }
+.el-form { margin-left: 10px; }
+.el-dialog__title { font-weight: bold; }
+.row-icon { margin-right: 5px; cursor: pointer; }
+.table-image { width: 52px; height: 52px; }
+.label-remark { color: #999; font-size: 14px; }
+.image52 { width: 52px; height: 52px; }
+.image52 .xz-uploader-icon { width: 52px; height: 52px; line-height: 52px; }
+.float-right{ float: right;}

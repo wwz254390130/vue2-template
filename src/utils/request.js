@@ -1,72 +1,93 @@
-import axios from 'axios';
-import { Message, MessageBox } from 'element-ui';
-import store from '../store';
-import { getToken } from '@/utils/auth';
+import axios from 'axios'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import Vue from 'vue'
 
-// 创建axios实例
+// create an axios instance
 const service = axios.create({
-    baseURL: process.env.BASE_API, // api的base_url
-    timeout: 5000, // 请求超时时间
-});
+  baseURL: process.env.VUE_APP_BASE_API,
+  // baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_URL : process.env.VUE_APP_BASE_API,
+  timeout: 10000 // request timeout
+})
 
-// request拦截器
+// request interceptor
 service.interceptors.request.use(
-    (config) => {
-        if (store.getters.token) {
-            config.headers['X-Token'] = getToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
-        }
-        return config;
-    },
-    (error) => {
-    // Do something with request error
-        console.log(error); // for debug
-        Promise.reject(error);
-    },
-);
+  config => {
+    // config.headers['Content-Type'] = 'application/json;charset=UTF-8';
+    // config.headers['withCredentials'] = true
+    // do something before request is sent
+    if (getToken()) {
+      // let each request carry token
+      // ['X-Token'] is a custom headers key
+      // please modify it according to the actual situation
+      config.headers['Authorization'] = getToken()
+    }
+    return config
+  },
+  error => {
+    // do something with request error
+    console.log(error) // for debug
+    return Promise.reject(error)
+  }
+)
 
-// respone拦截器
+// response interceptor
 service.interceptors.response.use(
-    (response) => {
-    /**
-     * code为非20000是抛错 可结合自己业务进行修改
-     */
-        const res = response.data;
-        if (res.code !== 200) {
-            Message({
-                message: res.message,
-                type: 'error',
-                duration: 5 * 1000,
-            });
+  /**
+   * If you want to get http information such as headers or status
+   * Please return  response => response
+   */
 
-            // 50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
-            if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-                MessageBox.confirm(
-                    '你已被登出，可以取消继续留在该页面，或者重新登录',
-                    '确定登出',
-                    {
-                        confirmButtonText: '重新登录',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    },
-                ).then(() => {
-                    store.dispatch('FedLogOut').then(() => {
-                        location.reload(); // 为了重新实例化vue-router对象 避免bug
-                    });
-                });
-            }
-            return Promise.reject('error');
-        }
-        return response.data;
-    },
-    (error) => {
-        console.log('err' + error); // for debug
-        Message({
-            message: error.message,
-            type: 'error',
-            duration: 5 * 1000,
-        });
-        return Promise.reject(error);
-    },
-);
+  /**
+   * Determine the request status by custom code
+   * Here is just an example
+   * You can also judge the status by HTTP Status Code
+   */
+  response => {
+    const res = response.data
+    // if the custom code is not 20000, it is judged as an error.
+    if (response.request.responseURL.indexOf('login') > 1) {
+      return res
+    }
+    if (res.code !== 200) {
+      if (res.code === 401) {
+        localStorage.clear()
+        sessionStorage.clear()
+        location.reload() // 为了重新实例化vue-router对象 避免bug
+        this.$router.push('/login')
+        return Promise.reject(new Error(res.msg || 'Error'))
+      }
+      Vue.prototype.$message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
+      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+        // to re-login
+        Vue.prototype.$messageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+          confirmButtonText: 'Re-Login',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+          store.dispatch('user/resetToken').then(() => {
+            location.reload()
+          })
+        })
+      }
+      return res
+    } else {
+      return res
+    }
+  },
+  error => {
+    console.log('err' + error) // for debug
+    Vue.prototype.$message({
+      message: error.message,
+      type: 'error',
+      duration: 5 * 1000
+    })
+    return Promise.reject(error)
+  }
+)
 
-export default service;
+export default service

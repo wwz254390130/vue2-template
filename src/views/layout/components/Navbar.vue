@@ -4,14 +4,12 @@
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" src="../../../assets/common/avatar.gif">
+        <img class="user-avatar" src="../../../assets/avatar.gif" />
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
         <router-link class="inlineBlock" to="/">
-          <el-dropdown-item>
-            Home
-          </el-dropdown-item>
+          <el-dropdown-item>Home</el-dropdown-item>
         </router-link>
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">LogOut</span>
@@ -22,32 +20,32 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import Breadcrumb from '@/components/Breadcrumb';
-import Hamburger from '@/components/Hamburger';
+import { mapGetters } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
 
 export default {
-    components: {
-        Breadcrumb,
-        Hamburger,
+  components: {
+    Breadcrumb,
+    Hamburger
+  },
+  computed: {
+    ...mapGetters([
+      'sidebar',
+      'avatar'
+    ])
+  },
+  methods: {
+    toggleSideBar() {
+      this.$store.dispatch('ToggleSideBar')
     },
-    computed: {
-        ...mapGetters([
-            'sidebar',
-            'avatar',
-        ]),
-    },
-    methods: {
-        toggleSideBar() {
-            this.$store.dispatch('ToggleSideBar');
-        },
-        logout() {
-            this.$store.dispatch('LogOut').then(() => {
-                location.reload(); // 为了重新实例化vue-router对象 避免bug
-            });
-        },
-    },
-};
+    logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload() // 为了重新实例化vue-router对象 避免bug
+      })
+    }
+  }
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

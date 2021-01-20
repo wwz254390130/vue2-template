@@ -1,32 +1,73 @@
 /**
- * Created by jiachenpan on 16/11/18.
+ * Created by PanJiaChen on 16/11/18.
  */
 
-export function isvalidUsername(str) {
-    const valid_map = ['admin', 'editor'];
-    return valid_map.indexOf(str.trim()) >= 0;
+/**
+ * @param {string} path
+ * @returns {Boolean}
+ */
+export function isExternal(path) {
+  return /^(https?:|mailto:|tel:)/.test(path)
 }
 
-/* 合法uri */
-export function validateURL(textval) {
-    const urlregex = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/;
-    return urlregex.test(textval);
+/**
+ * @param {string} str
+ * @returns {Boolean}
+ */
+export function validUsername(str) {
+  const valid_map = ['admin', 'editor']
+  return valid_map.indexOf(str.trim()) >= 0
 }
 
-/* 小写字母 */
-export function validateLowerCase(str) {
-    const reg = /^[a-z]+$/;
-    return reg.test(str);
+export function validUsername1(str) {
+  const reg = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/
+  console.log(reg.test(str))
+  return reg.test(str)
 }
 
-/* 大写字母 */
-export function validateUpperCase(str) {
-    const reg = /^[A-Z]+$/;
-    return reg.test(str);
+// 必须为数字
+export const isNumber = (rule, value, callback) => {
+  if (isNaN(value)) {
+    callback(new Error('必须为数字！'))
+  } else {
+    callback()
+  }
 }
 
-/* 大小写字母 */
-export function validatAlphabets(str) {
-    const reg = /^[A-Za-z]+$/;
-    return reg.test(str);
+// 必须 > 0
+export const mustGreaterthanZero = (rule, value, callback) => {
+  if (value <= 0) {
+    callback(new Error('必须大于0！'))
+  } else {
+    callback()
+  }
+}
+// 必须为整数
+export const mustInteger = (rule, value, callback) => {
+  value = '' + value
+  if (value.indexOf('.') != -1) {
+    callback(new Error('必须为整数！'))
+  } else {
+    callback()
+  }
+}
+// 判断是否是小数点六位
+export const checkIsSixPointNumber = (rule, value, callback) => {
+  const exp = /(^[0](\.[0-9]{1,6})?$)/
+  if (exp.test(value)) {
+    const number = '' + value
+    if (number.indexOf('.') != -1) {
+      const arr = number.split('.')
+      const str = arr[1]
+      if (str.length > 6) {
+        callback(new Error('小数点只能保留后六位！'))
+      } else {
+        callback()
+      }
+    } else {
+      callback()
+    }
+  } else {
+    callback(new Error('必须是小数 列如(0.1 代表 10%)'))
+  }
 }
