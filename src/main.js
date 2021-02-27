@@ -17,7 +17,7 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import md5 from 'js-md5'
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
 }
